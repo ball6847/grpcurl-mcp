@@ -101,7 +101,7 @@ Parameters:
 		}
 
 		// Format headers for display
-		headersMap := make(map[string]interface{})
+		headersMap := make(map[string]any)
 		for k, v := range g.headers {
 			headersMap[k] = v
 		}
@@ -214,11 +214,11 @@ Parameters:
 		trailersMap := metadataToMap(handler.trailers)
 
 		// Create a structured response with headers and trailers
-		response := map[string]interface{}{
+		response := map[string]any{
 			"body":     outputBuffer.String(),
 			"headers":  headersMap,
 			"trailers": trailersMap,
-			"metadata": map[string]interface{}{
+			"metadata": map[string]any{
 				"status_code": handler.Status.Code().String(),
 			},
 		}
@@ -318,7 +318,7 @@ Note: Slash notation (e.g., "mypackage.MyService/MyMethod") is used for invoking
 		var tmp []string
 		if ok {
 			tmp = strings.Split(entities, ",")
-		} else if entities, ok := args["entities"].([]interface{}); ok {
+		} else if entities, ok := args["entities"].([]any); ok {
 			for _, entity := range entities {
 				entityStr, ok := entity.(string)
 				if !ok {
@@ -423,13 +423,11 @@ Note: Slash notation (e.g., "mypackage.MyService/MyMethod") is used for invoking
 
 		return toolSuccess(strings.Join(results, "\n\n")), nil
 	})
-
-	return
 }
 
 // metadataToMap converts gRPC metadata to a map suitable for JSON marshaling
-func metadataToMap(md metadata.MD) map[string]interface{} {
-	result := make(map[string]interface{})
+func metadataToMap(md metadata.MD) map[string]any {
+	result := make(map[string]any)
 	for key, values := range md {
 		// If there's only one value, store it directly rather than as an array
 		if len(values) == 1 {
@@ -472,9 +470,9 @@ func main() {
 // WithStringArray adds a string array property to the tool schema.
 func WithStringArray(name string, opts ...mcp.PropertyOption) mcp.ToolOption {
 	return func(t *mcp.Tool) {
-		schema := map[string]interface{}{
+		schema := map[string]any{
 			"type": "array",
-			"items": map[string]interface{}{
+			"items": map[string]any{
 				"type": "string",
 			},
 		}
@@ -498,7 +496,7 @@ func WithStringArray(name string, opts ...mcp.PropertyOption) mcp.ToolOption {
 
 // toolSuccess creates a successful MCP response with the provided text contents.
 func toolSuccess(contents ...string) *mcp.CallToolResult {
-	var iface []interface{}
+	var iface []any
 	for _, c := range contents {
 		iface = append(iface, mcp.NewTextContent(c))
 	}
@@ -511,7 +509,7 @@ func toolSuccess(contents ...string) *mcp.CallToolResult {
 // toolError creates an MCP error response with the given error message.
 func toolError(message string) *mcp.CallToolResult {
 	return &mcp.CallToolResult{
-		Content: []interface{}{mcp.NewTextContent(message)},
+		Content: []any{mcp.NewTextContent(message)},
 		IsError: true,
 	}
 }
