@@ -3,7 +3,6 @@ module github.com/wricardo/grpcurl-mcp
 go 1.23.0
 
 require (
-	github.com/davecgh/go-spew v1.1.1
 	github.com/fullstorydev/grpcurl v0.0.0-00010101000000-000000000000
 	github.com/golang/protobuf v1.5.4
 	github.com/jhump/protoreflect v1.17.0
